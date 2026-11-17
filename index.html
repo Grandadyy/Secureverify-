@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SecureVerify — QR Authentication System</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#1a3c6e;--accent:#2ecc71;--danger:#e74c3c;--warn:#f39c12;
+  --bg:#f4f7fb;--card:#fff;--text:#2c3e50;--sub:#7f8c8d;--border:#e0e6ed;
+}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+/* NAV */
+nav{background:var(--primary);color:#fff;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.2);position:sticky;top:0;z-index:100}
+.nav-brand{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:700}
+.nav-brand .icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.nav-links{display:flex;gap:8px}
+.nav-links a{color:rgba(255,255,255,.85);text-decoration:none;padding:8px 16px;border-radius:6px;font-size:.9rem;transition:.2s}
+.nav-links a:hover,.nav-links a.active{background:rgba(255,255,255,.15);color:#fff}
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a3c6e 0%,#2c5282 50%,#1a3c6e 100%);color:#fff;padding:80px 24px;text-align:center}
+.hero h1{font-size:2.6rem;font-weight:800;margin-bottom:16px;line-height:1.2}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:1.15rem;color:rgba(255,255,255,.85);max-width:600px;margin:0 auto 36px}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn{padding:13px 28px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;border:none;transition:.2s;text-decoration:none;display:inline-block}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#27ae60;transform:translateY(-2px)}
+.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6)}
+.btn-outline:hover{background:rgba(255,255,255,.1)}
+/* STATS BAR */
+.stats-bar{background:var(--primary);border-top:1px solid rgba(255,255,255,.1);padding:20px 24px;display:flex;justify-content:center;gap:64px;flex-wrap:wrap}
+.stat-item{text-align:center;color:#fff}
+.stat-num{font-size:1.8rem;font-weight:800;color:var(--accent)}
+.stat-label{font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px}
+/* FEATURES */
+.section{padding:64px 24px;max-width:1100px;margin:0 auto;width:100%}
+.section-title{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:8px;color:var(--primary)}
+.section-sub{text-align:center;color:var(--sub);margin-bottom:48px;font-size:1rem}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.feature-card{background:var(--card);border-radius:12px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--border);transition:.2s}
+.feature-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.feat-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:16px}
+.feat-icon.green{background:#d5f5e3}.feat-icon.blue{background:#d6eaf8}.feat-icon.orange{background:#fdebd0}.feat-icon.purple{background:#e8daef}
+.feature-card h3{font-size:1.1rem;font-weight:700;margin-bottom:8px;color:var(--primary)}
+.feature-card p{color:var(--sub);font-size:.9rem;line-height:1.6}
+/* HOW IT WORKS */
+.how-section{background:#fff;padding:64px 24px}
+.how-inner{max-width:900px;margin:0 auto}
+.steps{display:flex;gap:0;flex-wrap:wrap;justify-content:center;margin-top:40px;position:relative}
+.step{flex:1;min-width:180px;text-align:center;padding:0 16px;position:relative}
+.step:not(:last-child)::after{content:'→';position:absolute;right:-12px;top:24px;font-size:1.5rem;color:var(--accent)}
+.step-num{width:52px;height:52px;border-radius:50%;background:var(--primary);color:#fff;font-size:1.3rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.step h4{font-size:.95rem;font-weight:700;color:var(--primary);margin-bottom:6px}
+.step p{font-size:.83rem;color:var(--sub);line-height:1.5}
+/* FOOTER */
+footer{background:var(--primary);color:rgba(255,255,255,.7);text-align:center;padding:20px;margin-top:auto;font-size:.85rem}
+footer span{color:var(--accent)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><div class="icon">🔐</div>SecureVerify</div>
+  <div class="nav-links">
+    <a href="index.html" class="active">Home</a>
+    <a href="verify.html">Verify Product</a>
+    <a href="admin-login.html">Admin Login</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Stop Counterfeit Products <span>Before They Reach You</span></h1>
+  <p>SecureVerify uses SHA-256 cryptographic QR codes to give consumers instant, real-time product authentication — straight from their smartphone camera.</p>
+  <div class="hero-btns">
+    <a href="verify.html" class="btn btn-primary">🔍 Verify a Product</a>
+    <a href="admin-login.html" class="btn btn-outline">⚙️ Manufacturer Login</a>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Clone Detection Rate</div></div>
+  <div class="stat-item"><div class="stat-num">&lt;1.5s</div><div class="stat-label">Avg. Verification Time</div></div>
+  <div class="stat-item"><div class="stat-num">SHA-256</div><div class="stat-label">Cryptographic Security</div></div>
+  <div class="stat-item"><div class="stat-num">4.38/5</div><div class="stat-label">Usability Score</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">Why SecureVerify?</div>
+  <div class="section-sub">Built to solve the gaps that holograms, RFID, and plain QR codes cannot close</div>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feat-icon green">🔒</div><h3>Cryptographic Security</h3><p>Each QR code is generated using SHA-256 hashing — making it computationally impossible to clone or forge.</p></div>
+    <div class="feature-card"><div class="feat-icon blue">⚡</div><h3>Real-Time Verification</h3><p>Cloud-hosted backend validates every scan in under 1.5 seconds with instant authentic or counterfeit response.</p></div>
+    <div class="feature-card"><div class="feat-icon orange">📱</div><h3>No App Required</h3><p>Works on any smartphone browser. Consumers simply scan and see results — no downloads, no accounts needed.</p></div>
+    <div class="feature-card"><div class="feat-icon purple">🚨</div><h3>Clone Detection</h3><p>Scan-count anomaly detection flags any code that has been duplicated and used on multiple counterfeit items.</p></div>
+  </div>
+</div>
+
+<div class="how-section">
+  <div class="how-inner">
+    <div class="section-title">How It Works</div>
+    <div class="section-sub">Four simple steps from product registration to consumer verification</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><h4>Manufacturer Registers</h4><p>Admin enters product details. System generates unique SHA-256 QR code.</p></div>
+      <div class="step"><div class="step-num">2</div><h4>QR Code Printed</h4><p>Secure QR code is downloaded and printed on product packaging.</p></div>
+      <div class="step"><div class="step-num">3</div><h4>Consumer Scans</h4><p>Buyer scans the QR code with any smartphone camera.</p></div>
+      <div class="step"><div class="step-num">4</div><h4>Instant Result</h4><p>System returns Authentic ✅, Suspicious ⚠️, or Counterfeit ❌ verdict.</p></div>
+    </div>
+  </div>
+</div>
+
+<footer>© 2024 SecureVerify — Developed by <span>Ganiyu Lawal Sani</span> | BSc. Computer Science, Nasarawa State University, Keffi</footer>
+</body>
+</html>

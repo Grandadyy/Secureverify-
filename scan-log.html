@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Scan Logs — SecureVerify Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#1a3c6e;--accent:#2ecc71;--danger:#e74c3c;--warn:#f39c12;--bg:#f4f7fb;--card:#fff;--text:#2c3e50;--sub:#7f8c8d;--border:#e0e6ed}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text)}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;background:var(--primary);color:#fff;padding:0;flex-shrink:0;display:flex;flex-direction:column}
+.sidebar-brand{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-brand h2{font-size:1.2rem;font-weight:800;display:flex;align-items:center;gap:8px}
+.sidebar-brand p{font-size:.75rem;color:rgba(255,255,255,.6);margin-top:3px}
+.sidebar-nav{padding:16px 12px;flex:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,.8);font-size:.88rem;cursor:pointer;margin-bottom:4px;text-decoration:none;transition:.15s}
+.nav-item:hover,.nav-item.active{background:rgba(255,255,255,.12);color:#fff}
+.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,.1)}
+.user-badge{display:flex;align-items:center;gap:10px}
+.user-avatar{width:36px;height:36px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+.user-info .name{font-weight:600;color:#fff;font-size:.8rem}.user-info .role{color:rgba(255,255,255,.6);font-size:.75rem}
+.main-content{flex:1;padding:28px;overflow-y:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.topbar h1{font-size:1.5rem;font-weight:700;color:var(--primary)}
+.topbar p{font-size:.85rem;color:var(--sub);margin-top:2px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 1px 8px rgba(0,0,0,.06);border-left:4px solid var(--accent)}
+.stat-card.blue{border-color:#3498db}.stat-card.orange{border-color:var(--warn)}.stat-card.red{border-color:var(--danger)}
+.stat-val{font-size:2rem;font-weight:800;color:var(--primary);line-height:1}
+.stat-lbl{font-size:.8rem;color:var(--sub);margin-top:6px}
+.card{background:var(--card);border-radius:12px;box-shadow:0 1px 8px rgba(0,0,0,.06);overflow:hidden;margin-bottom:24px}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.card-header h3{font-size:1rem;font-weight:700;color:var(--primary)}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#f8fafc;color:var(--sub);transition:.2s}
+.filter-btn.active,.filter-btn:hover{border-color:var(--primary);background:var(--primary);color:#fff}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+th{background:#f8fafc;padding:11px 14px;text-align:left;font-size:.76rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:#f9fbfd}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700}
+.badge.authentic{background:#d5f5e3;color:#1e8449}
+.badge.counterfeit{background:#fcd9d9;color:#922b21}
+.badge.suspicious{background:#fef9e7;color:#b7770d}
+.search-bar{padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;outline:none;width:220px;color:var(--text)}
+.search-bar:focus{border-color:var(--primary)}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-brand"><h2>🔐 SecureVerify</h2><p>Admin Dashboard</p></div>
+  <nav class="sidebar-nav">
+    <a class="nav-item" href="dashboard.html"><span>📊</span>Dashboard</a>
+    <a class="nav-item" href="dashboard.html"><span>📦</span>Register Product</a>
+    <a class="nav-item active" href="scan-log.html"><span>📋</span>Scan Logs</a>
+    <a class="nav-item" href="verify.html"><span>🔍</span>Verify Product</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-badge">
+      <div class="user-avatar">GL</div>
+      <div class="user-info"><div class="name">Admin</div><div class="role">Manufacturer</div></div>
+    </div>
+    <a href="admin-login.html" style="display:block;margin-top:12px;font-size:.78rem;color:rgba(255,255,255,.6);text-decoration:none">🚪 Logout</a>
+  </div>
+</aside>
+<main class="main-content">
+  <div class="topbar">
+    <div><h1>Scan Activity Logs</h1><p>Real-time record of all product verification attempts</p></div>
+    <input class="search-bar" placeholder="🔍 Search product or batch..." onkeyup="filterTable(this.value)"/>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-val">147</div><div class="stat-lbl">Total Scans</div></div>
+    <div class="stat-card blue"><div class="stat-val">141</div><div class="stat-lbl">Authentic</div></div>
+    <div class="stat-card orange"><div class="stat-val">4</div><div class="stat-lbl">Suspicious</div></div>
+    <div class="stat-card red"><div class="stat-val">2</div><div class="stat-lbl">Counterfeit</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <h3>📋 All Scan Events</h3>
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterStatus('all',this)">All</button>
+        <button class="filter-btn" onclick="filterStatus('authentic',this)">✅ Authentic</button>
+        <button class="filter-btn" onclick="filterStatus('suspicious',this)">⚠️ Suspicious</button>
+        <button class="filter-btn" onclick="filterStatus('counterfeit',this)">❌ Counterfeit</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="scanTable">
+        <thead><tr><th>#</th><th>Product Name</th><th>Batch No.</th><th>Scan Time</th><th>Scan Count</th><th>Response Time</th><th>Result</th></tr></thead>
+        <tbody id="scanBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</div>
+<script>
+const logs=[
+  {id:1,product:'Paracetamol 500mg',batch:'BATCH-2024-001',time:'2024-03-15 09:12:34',count:1,resp:'0.68s',status:'authentic'},
+  {id:2,product:'Vitamin C Tablets',batch:'BATCH-2024-002',time:'2024-03-15 09:45:21',count:1,resp:'0.72s',status:'authentic'},
+  {id:3,product:'Hand Sanitizer 250ml',batch:'BATCH-2024-003',time:'2024-03-15 10:03:57',count:47,resp:'0.61s',status:'suspicious'},
+  {id:4,product:'Malaria Test Kit',batch:'BATCH-2024-004',time:'2024-03-15 10:22:11',count:1,resp:'0.55s',status:'authentic'},
+  {id:5,product:'Unknown Product',batch:'UNKNOWN',time:'2024-03-15 11:05:44',count:1,resp:'0.43s',status:'counterfeit'},
+  {id:6,product:'Paracetamol 500mg',batch:'BATCH-2024-001',time:'2024-03-15 11:38:29',count:2,resp:'0.70s',status:'authentic'},
+  {id:7,product:'Groundnut Oil 1L',batch:'BATCH-2024-005',time:'2024-03-15 12:14:08',count:1,resp:'0.77s',status:'authentic'},
+  {id:8,product:'Hand Sanitizer 250ml',batch:'BATCH-2024-003',time:'2024-03-15 13:00:52',count:48,resp:'0.63s',status:'suspicious'},
+  {id:9,product:'Unknown Product',batch:'FAKE-999',time:'2024-03-15 13:45:17',count:1,resp:'0.40s',status:'counterfeit'},
+  {id:10,product:'Vitamin C Tablets',batch:'BATCH-2024-002',time:'2024-03-15 14:22:33',count:2,resp:'0.69s',status:'authentic'},
+  {id:11,product:'Malaria Test Kit',batch:'BATCH-2024-004',time:'2024-03-15 15:01:19',count:2,resp:'0.58s',status:'authentic'},
+  {id:12,product:'Paracetamol 500mg',batch:'BATCH-2024-001',time:'2024-03-15 15:44:02',count:3,resp:'0.74s',status:'authentic'},
+];
+
+let currentFilter='all';
+let currentSearch='';
+
+function renderTable(){
+  const tbody=document.getElementById('scanBody');
+  tbody.innerHTML='';
+  logs.filter(l=>{
+    const matchStatus=currentFilter==='all'||l.status===currentFilter;
+    const matchSearch=!currentSearch||(l.product+l.batch).toLowerCase().includes(currentSearch.toLowerCase());
+    return matchStatus&&matchSearch;
+  }).forEach(l=>{
+    const badge=`<span class="badge ${l.status}">${l.status==='authentic'?'✅ Authentic':l.status==='counterfeit'?'❌ Counterfeit':'⚠️ Suspicious'}</span>`;
+    tbody.insertAdjacentHTML('beforeend',`<tr><td>${l.id}</td><td><strong>${l.product}</strong></td><td>${l.batch}</td><td>${l.time}</td><td>${l.count}x</td><td>${l.resp}</td><td>${badge}</td></tr>`);
+  });
+}
+
+function filterStatus(status,btn){
+  currentFilter=status;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+function filterTable(val){currentSearch=val;renderTable();}
+renderTable();
+</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin Login — SecureVerify</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#1a3c6e;--accent:#2ecc71;--danger:#e74c3c;--bg:#f4f7fb;--card:#fff;--text:#2c3e50;--sub:#7f8c8d;--border:#e0e6ed}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a3c6e,#2c5282);min-height:100vh;display:flex;flex-direction:column}
+nav{background:rgba(0,0,0,.2);color:#fff;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:10px;font-size:1.2rem;font-weight:700}
+.nav-brand .icon{width:32px;height:32px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.nav-links a{color:rgba(255,255,255,.8);text-decoration:none;padding:7px 14px;border-radius:6px;font-size:.88rem;margin-left:4px}
+.nav-links a:hover{background:rgba(255,255,255,.15)}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 16px}
+.login-card{background:#fff;border-radius:16px;padding:44px 40px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo .icon{width:60px;height:60px;background:var(--primary);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:12px}
+.login-logo h2{font-size:1.5rem;font-weight:700;color:var(--primary)}
+.login-logo p{color:var(--sub);font-size:.9rem;margin-top:4px}
+.form-group{margin-bottom:20px}
+label{display:block;font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:6px}
+input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;color:var(--text);outline:none;transition:.2s;background:#fafbfc}
+input:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(26,60,110,.08)}
+.btn-submit{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:8px}
+.btn-submit:hover{background:#163260;transform:translateY(-1px)}
+.error-msg{background:#fef0f0;border:1px solid #fbc8c8;color:var(--danger);padding:10px 14px;border-radius:7px;font-size:.87rem;margin-bottom:16px;display:none}
+.demo-hint{background:#eafaf1;border:1px solid #a9dfbf;padding:12px 14px;border-radius:8px;font-size:.83rem;color:#1e8449;margin-top:16px;text-align:center}
+.back-link{text-align:center;margin-top:20px;font-size:.87rem;color:var(--sub)}
+.back-link a{color:var(--primary);text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><div class="icon">🔐</div>SecureVerify</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="verify.html">Verify Product</a>
+  </div>
+</nav>
+<div class="main">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">🏭</div>
+      <h2>Manufacturer Login</h2>
+      <p>Access the admin dashboard to register products and manage QR codes</p>
+    </div>
+    <div class="error-msg" id="errMsg">❌ Invalid email or password. Please try again.</div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="email" placeholder="admin@company.com" value="admin@secureverify.com"/>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Enter your password" value="admin123"/>
+    </div>
+    <button class="btn-submit" onclick="doLogin()">🔑 Login to Dashboard</button>
+    <div class="demo-hint">🔑 Demo credentials pre-filled — click Login to continue</div>
+    <div class="back-link"><a href="index.html">← Back to Home</a></div>
+  </div>
+</div>
+<script>
+function doLogin(){
+  const email=document.getElementById('email').value;
+  const pass=document.getElementById('password').value;
+  if(email==='admin@secureverify.com' && pass==='admin123'){
+    window.location.href='dashboard.html';
+  } else {
+    document.getElementById('errMsg').style.display='block';
+  }
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+</script>
+</body>
+</html>

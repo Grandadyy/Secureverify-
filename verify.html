@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Verify Product — SecureVerify</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#1a3c6e;--accent:#2ecc71;--danger:#e74c3c;--warn:#f39c12;--bg:#f4f7fb;--card:#fff;--text:#2c3e50;--sub:#7f8c8d;--border:#e0e6ed}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+nav{background:var(--primary);color:#fff;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.nav-brand{display:flex;align-items:center;gap:10px;font-size:1.2rem;font-weight:700}
+.nav-brand .icon{width:34px;height:34px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.nav-links a{color:rgba(255,255,255,.85);text-decoration:none;padding:7px 14px;border-radius:6px;font-size:.88rem;margin-left:4px;transition:.2s}
+.nav-links a:hover,.nav-links a.active{background:rgba(255,255,255,.15);color:#fff}
+.hero-strip{background:linear-gradient(135deg,var(--primary),#2c5282);color:#fff;padding:36px 24px;text-align:center}
+.hero-strip h1{font-size:1.9rem;font-weight:800;margin-bottom:8px}
+.hero-strip p{color:rgba(255,255,255,.85);font-size:.95rem}
+.main{flex:1;padding:40px 16px;max-width:700px;margin:0 auto;width:100%}
+/* SCAN INPUT */
+.scan-card{background:var(--card);border-radius:16px;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.08);margin-bottom:24px}
+.scan-card h2{font-size:1.15rem;font-weight:700;color:var(--primary);margin-bottom:6px}
+.scan-card p{font-size:.85rem;color:var(--sub);margin-bottom:20px}
+.input-row{display:flex;gap:10px}
+input{flex:1;padding:12px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;outline:none;color:var(--text);transition:.2s}
+input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,60,110,.08)}
+.btn{padding:12px 22px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;border:none;transition:.2s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#163260}
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--sub);font-size:.82rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+/* DEMO BUTTONS */
+.demo-row{display:flex;gap:10px;flex-wrap:wrap}
+.demo-btn{padding:9px 16px;border-radius:7px;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid;transition:.2s}
+.demo-btn.auth{border-color:var(--accent);color:#1e8449;background:#eafaf1}
+.demo-btn.auth:hover{background:#d5f5e3}
+.demo-btn.fake{border-color:var(--danger);color:var(--danger);background:#fef0f0}
+.demo-btn.fake:hover{background:#fcd9d9}
+.demo-btn.sus{border-color:var(--warn);color:#b7770d;background:#fef9e7}
+.demo-btn.sus:hover{background:#fdebd0}
+/* RESULT */
+.result-card{border-radius:16px;padding:28px;margin-bottom:24px;display:none;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.result-card.authentic{background:#eafaf1;border:2px solid #82e0aa}
+.result-card.counterfeit{background:#fef0f0;border:2px solid #f1948a}
+.result-card.suspicious{background:#fef9e7;border:2px solid #f9ca45}
+.result-icon{font-size:3.5rem;margin-bottom:12px}
+.result-title{font-size:1.5rem;font-weight:800;margin-bottom:6px}
+.result-card.authentic .result-title{color:#1e8449}
+.result-card.counterfeit .result-title{color:var(--danger)}
+.result-card.suspicious .result-title{color:#b7770d}
+.result-msg{font-size:.9rem;margin-bottom:20px;line-height:1.6}
+.result-card.authentic .result-msg{color:#1a5e2c}
+.result-card.counterfeit .result-msg{color:#922b21}
+.result-card.suspicious .result-msg{color:#9a7d0a}
+.prod-details{background:rgba(255,255,255,.7);border-radius:10px;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.detail-item label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#555;display:block;margin-bottom:2px}
+.detail-item span{font-size:.88rem;font-weight:600;color:var(--text)}
+.hash-info{margin-top:14px;padding:10px;background:rgba(255,255,255,.5);border-radius:8px;font-size:.72rem;font-family:monospace;color:#444;word-break:break-all}
+/* HOW */
+.how-card{background:var(--card);border-radius:12px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.how-card h3{font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:14px}
+.how-steps{display:flex;flex-direction:column;gap:10px}
+.how-step{display:flex;gap:12px;align-items:flex-start}
+.step-num{width:26px;height:26px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;flex-shrink:0}
+.step-text{font-size:.85rem;color:var(--sub);line-height:1.5;padding-top:3px}
+footer{background:var(--primary);color:rgba(255,255,255,.7);text-align:center;padding:18px;font-size:.82rem}
+footer span{color:var(--accent)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><div class="icon">🔐</div>SecureVerify</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="verify.html" class="active">Verify Product</a>
+    <a href="admin-login.html">Admin Login</a>
+  </div>
+</nav>
+<div class="hero-strip">
+  <h1>🔍 Verify Product Authenticity</h1>
+  <p>Enter the product code from the QR code or scan it with your camera</p>
+</div>
+<div class="main">
+  <div class="scan-card">
+    <h2>Enter Product Code</h2>
+    <p>Scan the QR code on the product packaging, or type the verification code below</p>
+    <div class="input-row">
+      <input id="codeInput" placeholder="e.g. PROD-001-a3f2c8d1..." onkeydown="if(event.key==='Enter')verify()"/>
+      <button class="btn btn-primary" onclick="verify()">🔍 Verify</button>
+    </div>
+    <div class="divider">or try a demo scan</div>
+    <div class="demo-row">
+      <button class="demo-btn auth" onclick="demoVerify('authentic')">✅ Authentic Product</button>
+      <button class="demo-btn fake" onclick="demoVerify('counterfeit')">❌ Counterfeit Product</button>
+      <button class="demo-btn sus" onclick="demoVerify('suspicious')">⚠️ Suspicious Activity</button>
+    </div>
+  </div>
+
+  <div class="result-card authentic" id="resAuthentic">
+    <div class="result-icon">✅</div>
+    <div class="result-title">AUTHENTIC PRODUCT</div>
+    <div class="result-msg">This product has been verified as <strong>genuine</strong>. The SHA-256 cryptographic hash matches the manufacturer's registered record. This product is safe to purchase.</div>
+    <div class="prod-details">
+      <div class="detail-item"><label>Product Name</label><span>Paracetamol 500mg</span></div>
+      <div class="detail-item"><label>Batch Number</label><span>BATCH-2024-001</span></div>
+      <div class="detail-item"><label>Manufacturer</label><span>HealthPlus Nigeria Ltd</span></div>
+      <div class="detail-item"><label>Category</label><span>Pharmaceutical</span></div>
+      <div class="detail-item"><label>Manufacture Date</label><span>15 Jan 2024</span></div>
+      <div class="detail-item"><label>Expiry Date</label><span>14 Jan 2026</span></div>
+      <div class="detail-item"><label>Scan Count</label><span>1st scan ✓</span></div>
+      <div class="detail-item"><label>Verified At</label><span id="authTime"></span></div>
+    </div>
+    <div class="hash-info">SHA-256 Hash Verified: a3f2c8d1e94b7062f1a5d3c8b2e9f4a7c1d6e8b3f2a9c5d7e1b4f8a2c6d9e3b1</div>
+  </div>
+
+  <div class="result-card counterfeit" id="resCounterfeit">
+    <div class="result-icon">❌</div>
+    <div class="result-title">COUNTERFEIT WARNING</div>
+    <div class="result-msg">⚠️ <strong>Do NOT purchase this product.</strong> The QR code hash does not match any registered product in our database. This product may be <strong>fake or tampered with</strong>. Please report to NAFDAC immediately.</div>
+    <div class="prod-details" style="grid-template-columns:1fr">
+      <div class="detail-item"><label>Scan Attempt</label><span>Hash mismatch detected</span></div>
+      <div class="detail-item"><label>Detected At</label><span id="fakeTime"></span></div>
+      <div class="detail-item"><label>Action Required</label><span>Report to NAFDAC: 0800-162-3322</span></div>
+    </div>
+    <div class="hash-info">Received Hash: x9z1k2m4n8p3q7r5... ❌ NO MATCH IN DATABASE</div>
+  </div>
+
+  <div class="result-card suspicious" id="resSuspicious">
+    <div class="result-icon">⚠️</div>
+    <div class="result-title">SUSPICIOUS ACTIVITY DETECTED</div>
+    <div class="result-msg">The product code is valid, but this QR code has been scanned an unusually high number of times across different locations. This may indicate the code has been <strong>copied onto counterfeit products</strong>. Exercise caution.</div>
+    <div class="prod-details">
+      <div class="detail-item"><label>Product Name</label><span>Hand Sanitizer 250ml</span></div>
+      <div class="detail-item"><label>Batch Number</label><span>BATCH-2024-003</span></div>
+      <div class="detail-item"><label>Total Scan Count</label><span>47 scans ⚠️</span></div>
+      <div class="detail-item"><label>Anomaly Threshold</label><span>Exceeded (limit: 5)</span></div>
+      <div class="detail-item"><label>Last Scan Location</label><span>Multiple locations</span></div>
+      <div class="detail-item"><label>Flagged At</label><span id="susTime"></span></div>
+    </div>
+    <div class="hash-info">SHA-256 Hash: d7e2b9f4a1c8d3e6b2f9a5c1d8e4b7f3... ⚠️ SCAN COUNT ANOMALY</div>
+  </div>
+
+  <div class="how-card">
+    <h3>How Verification Works</h3>
+    <div class="how-steps">
+      <div class="how-step"><div class="step-num">1</div><div class="step-text">Your device sends the scanned QR code data (Product ID + SHA-256 hash) to our secure verification server via HTTPS/TLS 1.3</div></div>
+      <div class="how-step"><div class="step-num">2</div><div class="step-text">The server retrieves the registered product record from the MySQL database and recomputes the expected SHA-256 hash</div></div>
+      <div class="how-step"><div class="step-num">3</div><div class="step-text">The received hash is compared with the recomputed hash using constant-time comparison to prevent timing attacks</div></div>
+      <div class="how-step"><div class="step-num">4</div><div class="step-text">Scan count is checked against the anomaly threshold. Result is returned in under 1.5 seconds with full audit log entry</div></div>
+    </div>
+  </div>
+</div>
+<footer>© 2024 SecureVerify — Developed by <span>Ganiyu Lawal Sani</span> | Nasarawa State University, Keffi</footer>
+<script>
+function now(){return new Date().toLocaleString()}
+function hideAll(){['resAuthentic','resCounterfeit','resSuspicious'].forEach(id=>{document.getElementById(id).style.display='none'})}
+function verify(){
+  const code=document.getElementById('codeInput').value.trim();
+  if(!code){alert('Please enter a product code');return}
+  hideAll();
+  // Simulate: if code contains 'FAKE' → counterfeit, contains 'SUS' → suspicious, else authentic
+  if(code.toUpperCase().includes('FAKE')){demoVerify('counterfeit')}
+  else if(code.toUpperCase().includes('SUS')){demoVerify('suspicious')}
+  else{demoVerify('authentic')}
+}
+function demoVerify(type){
+  hideAll();
+  document.getElementById('authTime').textContent=now();
+  document.getElementById('fakeTime').textContent=now();
+  document.getElementById('susTime').textContent=now();
+  if(type==='authentic'){document.getElementById('resAuthentic').style.display='block';document.getElementById('resAuthentic').scrollIntoView({behavior:'smooth',block:'start'})}
+  else if(type==='counterfeit'){document.getElementById('resCounterfeit').style.display='block';document.getElementById('resCounterfeit').scrollIntoView({behavior:'smooth',block:'start'})}
+  else{document.getElementById('resSuspicious').style.display='block';document.getElementById('resSuspicious').scrollIntoView({behavior:'smooth',block:'start'})}
+}
+</script>
+</body>
+</html>
