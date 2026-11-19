@@ -3,112 +3,609 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>SecureVerify — QR Authentication System</title>
+<title>SecureVerify — QR Code Product Authentication System</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --primary:#1a3c6e;--accent:#2ecc71;--danger:#e74c3c;--warn:#f39c12;
-  --bg:#f4f7fb;--card:#fff;--text:#2c3e50;--sub:#7f8c8d;--border:#e0e6ed;
-}
+:root{--primary:#1a3c6e;--accent:#2ecc71;--danger:#e74c3c;--warn:#f39c12;--bg:#f4f7fb;--card:#fff;--text:#2c3e50;--sub:#7f8c8d;--border:#e0e6ed}
 body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
-/* NAV */
 nav{background:var(--primary);color:#fff;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.2);position:sticky;top:0;z-index:100}
-.nav-brand{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:700}
+.nav-brand{display:flex;align-items:center;gap:10px;font-size:1.25rem;font-weight:700;cursor:pointer}
 .nav-brand .icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
-.nav-links{display:flex;gap:8px}
-.nav-links a{color:rgba(255,255,255,.85);text-decoration:none;padding:8px 16px;border-radius:6px;font-size:.9rem;transition:.2s}
+.nav-links{display:flex;gap:4px}
+.nav-links a{color:rgba(255,255,255,.85);text-decoration:none;padding:8px 14px;border-radius:6px;font-size:.88rem;cursor:pointer;transition:.2s}
 .nav-links a:hover,.nav-links a.active{background:rgba(255,255,255,.15);color:#fff}
-/* HERO */
-.hero{background:linear-gradient(135deg,#1a3c6e 0%,#2c5282 50%,#1a3c6e 100%);color:#fff;padding:80px 24px;text-align:center}
-.hero h1{font-size:2.6rem;font-weight:800;margin-bottom:16px;line-height:1.2}
+/* PAGES */
+.page{display:none;flex:1;flex-direction:column}
+.page.active{display:flex}
+/* ── HOME ── */
+.hero{background:linear-gradient(135deg,#1a3c6e 0%,#2c5282 50%,#1a3c6e 100%);color:#fff;padding:72px 24px;text-align:center}
+.hero h1{font-size:2.5rem;font-weight:800;margin-bottom:14px;line-height:1.2}
 .hero h1 span{color:var(--accent)}
-.hero p{font-size:1.15rem;color:rgba(255,255,255,.85);max-width:600px;margin:0 auto 36px}
-.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.btn{padding:13px 28px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;border:none;transition:.2s;text-decoration:none;display:inline-block}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover{background:#27ae60;transform:translateY(-2px)}
-.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6)}
-.btn-outline:hover{background:rgba(255,255,255,.1)}
-/* STATS BAR */
-.stats-bar{background:var(--primary);border-top:1px solid rgba(255,255,255,.1);padding:20px 24px;display:flex;justify-content:center;gap:64px;flex-wrap:wrap}
+.hero p{font-size:1.1rem;color:rgba(255,255,255,.85);max-width:580px;margin:0 auto 32px}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{padding:12px 26px;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:.2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#27ae60;transform:translateY(-2px)}
+.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6)}.btn-outline:hover{background:rgba(255,255,255,.1)}
+.btn-dark{background:var(--primary);color:#fff}.btn-dark:hover{background:#163260}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-sm{padding:7px 14px;font-size:.8rem}
+.stats-bar{background:var(--primary);border-top:1px solid rgba(255,255,255,.1);padding:18px 24px;display:flex;justify-content:center;gap:56px;flex-wrap:wrap}
 .stat-item{text-align:center;color:#fff}
-.stat-num{font-size:1.8rem;font-weight:800;color:var(--accent)}
-.stat-label{font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px}
-/* FEATURES */
-.section{padding:64px 24px;max-width:1100px;margin:0 auto;width:100%}
-.section-title{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:8px;color:var(--primary)}
-.section-sub{text-align:center;color:var(--sub);margin-bottom:48px;font-size:1rem}
-.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
-.feature-card{background:var(--card);border-radius:12px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--border);transition:.2s}
-.feature-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
-.feat-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:16px}
-.feat-icon.green{background:#d5f5e3}.feat-icon.blue{background:#d6eaf8}.feat-icon.orange{background:#fdebd0}.feat-icon.purple{background:#e8daef}
-.feature-card h3{font-size:1.1rem;font-weight:700;margin-bottom:8px;color:var(--primary)}
-.feature-card p{color:var(--sub);font-size:.9rem;line-height:1.6}
-/* HOW IT WORKS */
-.how-section{background:#fff;padding:64px 24px}
-.how-inner{max-width:900px;margin:0 auto}
-.steps{display:flex;gap:0;flex-wrap:wrap;justify-content:center;margin-top:40px;position:relative}
-.step{flex:1;min-width:180px;text-align:center;padding:0 16px;position:relative}
-.step:not(:last-child)::after{content:'→';position:absolute;right:-12px;top:24px;font-size:1.5rem;color:var(--accent)}
-.step-num{width:52px;height:52px;border-radius:50%;background:var(--primary);color:#fff;font-size:1.3rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
-.step h4{font-size:.95rem;font-weight:700;color:var(--primary);margin-bottom:6px}
-.step p{font-size:.83rem;color:var(--sub);line-height:1.5}
-/* FOOTER */
-footer{background:var(--primary);color:rgba(255,255,255,.7);text-align:center;padding:20px;margin-top:auto;font-size:.85rem}
+.stat-num{font-size:1.7rem;font-weight:800;color:var(--accent)}
+.stat-label{font-size:.78rem;color:rgba(255,255,255,.65);margin-top:2px}
+.section{padding:56px 24px;max-width:1100px;margin:0 auto;width:100%}
+.section-title{text-align:center;font-size:1.7rem;font-weight:700;margin-bottom:8px;color:var(--primary)}
+.section-sub{text-align:center;color:var(--sub);margin-bottom:40px;font-size:.95rem}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.feature-card{background:var(--card);border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--border);transition:.2s}
+.feature-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.feat-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:14px}
+.feat-icon.g{background:#d5f5e3}.feat-icon.b{background:#d6eaf8}.feat-icon.o{background:#fdebd0}.feat-icon.p{background:#e8daef}
+.feature-card h3{font-size:1rem;font-weight:700;margin-bottom:6px;color:var(--primary)}
+.feature-card p{color:var(--sub);font-size:.87rem;line-height:1.6}
+.how-section{background:#fff;padding:56px 24px}
+.how-inner{max-width:860px;margin:0 auto}
+.steps{display:flex;gap:0;flex-wrap:wrap;justify-content:center;margin-top:36px}
+.step{flex:1;min-width:160px;text-align:center;padding:0 14px;position:relative}
+.step:not(:last-child)::after{content:'→';position:absolute;right:-10px;top:20px;font-size:1.4rem;color:var(--accent)}
+.step-num{width:48px;height:48px;border-radius:50%;background:var(--primary);color:#fff;font-size:1.2rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.step h4{font-size:.9rem;font-weight:700;color:var(--primary);margin-bottom:5px}
+.step p{font-size:.8rem;color:var(--sub);line-height:1.5}
+/* ── LOGIN ── */
+.login-wrap{flex:1;background:linear-gradient(135deg,#1a3c6e,#2c5282);display:flex;align-items:center;justify-content:center;padding:40px 16px}
+.login-card{background:#fff;border-radius:16px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.login-logo{text-align:center;margin-bottom:24px}
+.login-logo .li{width:56px;height:56px;background:var(--primary);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;font-size:1.7rem;margin-bottom:10px}
+.login-logo h2{font-size:1.4rem;font-weight:700;color:var(--primary)}
+.login-logo p{color:var(--sub);font-size:.87rem;margin-top:3px}
+.form-group{margin-bottom:16px}
+label{display:block;font-size:.82rem;font-weight:600;color:var(--text);margin-bottom:5px}
+input,select{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:7px;font-size:.9rem;color:var(--text);outline:none;transition:.2s;background:#fafbfc}
+input:focus,select:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(26,60,110,.07)}
+.btn-submit{width:100%;padding:13px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:.97rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:6px}
+.btn-submit:hover{background:#163260}
+.err-msg{background:#fef0f0;border:1px solid #fbc8c8;color:var(--danger);padding:9px 13px;border-radius:7px;font-size:.85rem;margin-bottom:14px;display:none}
+.demo-hint{background:#eafaf1;border:1px solid #a9dfbf;padding:11px 13px;border-radius:8px;font-size:.8rem;color:#1e8449;margin-top:14px;text-align:center}
+.back-link{text-align:center;margin-top:16px;font-size:.85rem;color:var(--sub)}
+.back-link a{color:var(--primary);font-weight:600;cursor:pointer}
+/* ── DASHBOARD ── */
+.layout{display:flex;flex:1}
+.sidebar{width:230px;background:var(--primary);color:#fff;flex-shrink:0;display:flex;flex-direction:column}
+.sb-brand{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sb-brand h2{font-size:1.1rem;font-weight:800}
+.sb-brand p{font-size:.72rem;color:rgba(255,255,255,.55);margin-top:2px}
+.sb-nav{padding:14px 10px;flex:1}
+.sb-item{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:7px;color:rgba(255,255,255,.8);font-size:.85rem;cursor:pointer;margin-bottom:3px;transition:.15s}
+.sb-item:hover,.sb-item.active{background:rgba(255,255,255,.12);color:#fff}
+.sb-footer{padding:14px;border-top:1px solid rgba(255,255,255,.1)}
+.user-badge{display:flex;align-items:center;gap:9px}
+.user-av{width:34px;height:34px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem}
+.user-info .nm{font-weight:600;color:#fff;font-size:.78rem}.user-info .rl{color:rgba(255,255,255,.55);font-size:.72rem}
+.main-content{flex:1;padding:24px;overflow-y:auto;background:var(--bg)}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.topbar h1{font-size:1.4rem;font-weight:700;color:var(--primary)}
+.topbar p{font-size:.82rem;color:var(--sub);margin-top:2px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:var(--card);border-radius:11px;padding:18px;box-shadow:0 1px 8px rgba(0,0,0,.06);border-left:4px solid var(--accent)}
+.stat-card.bl{border-color:#3498db}.stat-card.or{border-color:var(--warn)}.stat-card.rd{border-color:var(--danger)}
+.stat-val{font-size:1.8rem;font-weight:800;color:var(--primary);line-height:1}
+.stat-lbl{font-size:.76rem;color:var(--sub);margin-top:5px}
+.stat-tr{font-size:.72rem;margin-top:3px;color:var(--accent)}
+.card{background:var(--card);border-radius:11px;box-shadow:0 1px 8px rgba(0,0,0,.06);overflow:hidden;margin-bottom:20px}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.card-header h3{font-size:.95rem;font-weight:700;color:var(--primary)}
+.reg-form{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg.full{grid-column:1/-1}
+.form-actions{grid-column:1/-1;display:flex;gap:8px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th{background:#f8fafc;padding:10px 13px;text-align:left;font-size:.74rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--border)}
+td{padding:11px 13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:#f9fbfd}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:.73rem;font-weight:700}
+.badge.auth{background:#d5f5e3;color:#1e8449}
+.badge.sus{background:#fef9e7;color:#b7770d}
+.badge.pend{background:#d6eaf8;color:#1a5276}
+.badge.cf{background:#fcd9d9;color:#922b21}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:200}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:14px;padding:28px;width:340px;text-align:center}
+.modal h3{font-size:1.1rem;font-weight:700;color:var(--primary);margin-bottom:5px}
+.modal p{font-size:.82rem;color:var(--sub);margin-bottom:18px}
+.qr-canvas{border:3px solid var(--primary);border-radius:10px;margin:0 auto 16px;display:block}
+.hash-display{background:#f0f4f9;border-radius:7px;padding:9px;font-size:.68rem;font-family:monospace;color:#1a3c6e;word-break:break-all;margin-bottom:14px;text-align:left}
+.modal-btns{display:flex;gap:8px;justify-content:center}
+/* ── VERIFY ── */
+.verify-hero{background:linear-gradient(135deg,var(--primary),#2c5282);color:#fff;padding:32px 24px;text-align:center}
+.verify-hero h1{font-size:1.8rem;font-weight:800;margin-bottom:6px}
+.verify-hero p{color:rgba(255,255,255,.85);font-size:.9rem}
+.verify-main{flex:1;padding:32px 16px;max-width:680px;margin:0 auto;width:100%}
+.scan-card{background:var(--card);border-radius:14px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,.08);margin-bottom:20px}
+.scan-card h2{font-size:1.1rem;font-weight:700;color:var(--primary);margin-bottom:5px}
+.scan-card p{font-size:.83rem;color:var(--sub);margin-bottom:18px}
+.input-row{display:flex;gap:8px}
+.input-row input{flex:1}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--sub);font-size:.8rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.demo-row{display:flex;gap:8px;flex-wrap:wrap}
+.demo-btn{padding:8px 14px;border-radius:7px;font-size:.8rem;font-weight:600;cursor:pointer;border:1.5px solid;transition:.2s}
+.demo-btn.da{border-color:var(--accent);color:#1e8449;background:#eafaf1}.demo-btn.da:hover{background:#d5f5e3}
+.demo-btn.df{border-color:var(--danger);color:var(--danger);background:#fef0f0}.demo-btn.df:hover{background:#fcd9d9}
+.demo-btn.ds{border-color:var(--warn);color:#b7770d;background:#fef9e7}.demo-btn.ds:hover{background:#fdebd0}
+.result-card{border-radius:14px;padding:24px;margin-bottom:20px;display:none;animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.result-card.authentic{background:#eafaf1;border:2px solid #82e0aa}
+.result-card.counterfeit{background:#fef0f0;border:2px solid #f1948a}
+.result-card.suspicious{background:#fef9e7;border:2px solid #f9ca45}
+.result-icon{font-size:3rem;margin-bottom:10px}
+.result-title{font-size:1.4rem;font-weight:800;margin-bottom:5px}
+.authentic .result-title{color:#1e8449}.counterfeit .result-title{color:var(--danger)}.suspicious .result-title{color:#b7770d}
+.result-msg{font-size:.87rem;margin-bottom:16px;line-height:1.6}
+.authentic .result-msg{color:#1a5e2c}.counterfeit .result-msg{color:#922b21}.suspicious .result-msg{color:#9a7d0a}
+.prod-details{background:rgba(255,255,255,.7);border-radius:9px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.detail-item label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#555;display:block;margin-bottom:2px}
+.detail-item span{font-size:.85rem;font-weight:600;color:var(--text)}
+.hash-info{margin-top:12px;padding:9px;background:rgba(255,255,255,.5);border-radius:7px;font-size:.7rem;font-family:monospace;color:#444;word-break:break-all}
+/* ── SCAN LOG ── */
+.search-bar{padding:7px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:.83rem;outline:none;width:200px;color:var(--text)}
+.search-bar:focus{border-color:var(--primary)}
+.filter-btn{padding:5px 13px;border-radius:20px;font-size:.76rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#f8fafc;color:var(--sub);transition:.2s}
+.filter-btn.active,.filter-btn:hover{border-color:var(--primary);background:var(--primary);color:#fff}
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;background:#2c3e50;color:#fff;padding:11px 18px;border-radius:7px;font-size:.84rem;display:none;z-index:300;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.toast.show{display:block;animation:slideIn .3s ease}
+@keyframes slideIn{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+footer{background:var(--primary);color:rgba(255,255,255,.65);text-align:center;padding:16px;font-size:.8rem}
 footer span{color:var(--accent)}
+@media(max-width:768px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .reg-form{grid-template-columns:1fr}
+  .sidebar{width:200px}
+  .steps .step:not(:last-child)::after{display:none}
+}
+@media(max-width:580px){
+  .layout{flex-direction:column}
+  .sidebar{width:100%}
+  .sb-nav{display:flex;flex-wrap:wrap;gap:4px;padding:10px}
+  .sb-item{margin-bottom:0}
+  .nav-brand{font-size:1rem}
+  .nav-links a{padding:8px 8px;font-size:.78rem}
+  nav{padding:0 12px}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .prod-details{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
+
+<!-- NAV -->
 <nav>
-  <div class="nav-brand"><div class="icon">🔐</div>SecureVerify</div>
+  <div class="nav-brand" onclick="showPage('home')">
+    <div class="icon">🔐</div>SecureVerify
+  </div>
   <div class="nav-links">
-    <a href="index.html" class="active">Home</a>
-    <a href="verify.html">Verify Product</a>
-    <a href="admin-login.html">Admin Login</a>
+    <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
+    <a id="nav-verify" onclick="showPage('verify')">Verify Product</a>
+    <a id="nav-login" onclick="showPage('login')">Admin Login</a>
   </div>
 </nav>
 
-<div class="hero">
-  <h1>Stop Counterfeit Products <span>Before They Reach You</span></h1>
-  <p>SecureVerify uses SHA-256 cryptographic QR codes to give consumers instant, real-time product authentication — straight from their smartphone camera.</p>
-  <div class="hero-btns">
-    <a href="verify.html" class="btn btn-primary">🔍 Verify a Product</a>
-    <a href="admin-login.html" class="btn btn-outline">⚙️ Manufacturer Login</a>
+<!-- ══════════════════ PAGE: HOME ══════════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <h1>Stop Counterfeit Products <span>Before They Reach You</span></h1>
+    <p>SecureVerify uses SHA-256 cryptographic QR codes to give consumers instant, real-time product authentication — straight from their smartphone camera.</p>
+    <div class="hero-btns">
+      <button class="btn btn-primary" onclick="showPage('verify')">🔍 Verify a Product</button>
+      <button class="btn btn-outline" onclick="showPage('login')">⚙️ Manufacturer Login</button>
+    </div>
   </div>
-</div>
-
-<div class="stats-bar">
-  <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Clone Detection Rate</div></div>
-  <div class="stat-item"><div class="stat-num">&lt;1.5s</div><div class="stat-label">Avg. Verification Time</div></div>
-  <div class="stat-item"><div class="stat-num">SHA-256</div><div class="stat-label">Cryptographic Security</div></div>
-  <div class="stat-item"><div class="stat-num">4.38/5</div><div class="stat-label">Usability Score</div></div>
-</div>
-
-<div class="section">
-  <div class="section-title">Why SecureVerify?</div>
-  <div class="section-sub">Built to solve the gaps that holograms, RFID, and plain QR codes cannot close</div>
-  <div class="features-grid">
-    <div class="feature-card"><div class="feat-icon green">🔒</div><h3>Cryptographic Security</h3><p>Each QR code is generated using SHA-256 hashing — making it computationally impossible to clone or forge.</p></div>
-    <div class="feature-card"><div class="feat-icon blue">⚡</div><h3>Real-Time Verification</h3><p>Cloud-hosted backend validates every scan in under 1.5 seconds with instant authentic or counterfeit response.</p></div>
-    <div class="feature-card"><div class="feat-icon orange">📱</div><h3>No App Required</h3><p>Works on any smartphone browser. Consumers simply scan and see results — no downloads, no accounts needed.</p></div>
-    <div class="feature-card"><div class="feat-icon purple">🚨</div><h3>Clone Detection</h3><p>Scan-count anomaly detection flags any code that has been duplicated and used on multiple counterfeit items.</p></div>
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Clone Detection Rate</div></div>
+    <div class="stat-item"><div class="stat-num">&lt;1.5s</div><div class="stat-label">Avg. Verification Time</div></div>
+    <div class="stat-item"><div class="stat-num">SHA-256</div><div class="stat-label">Cryptographic Security</div></div>
+    <div class="stat-item"><div class="stat-num">4.38/5</div><div class="stat-label">Usability Score</div></div>
   </div>
+  <div class="section">
+    <div class="section-title">Why SecureVerify?</div>
+    <div class="section-sub">Built to solve the gaps that holograms, RFID, and plain QR codes cannot close</div>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feat-icon g">🔒</div><h3>Cryptographic Security</h3><p>Each QR code is generated using SHA-256 hashing — making it computationally impossible to clone or forge.</p></div>
+      <div class="feature-card"><div class="feat-icon b">⚡</div><h3>Real-Time Verification</h3><p>Cloud-hosted backend validates every scan in under 1.5 seconds with instant authentic or counterfeit response.</p></div>
+      <div class="feature-card"><div class="feat-icon o">📱</div><h3>No App Required</h3><p>Works on any smartphone browser. Consumers simply scan and see results — no downloads, no accounts needed.</p></div>
+      <div class="feature-card"><div class="feat-icon p">🚨</div><h3>Clone Detection</h3><p>Scan-count anomaly detection flags any code that has been duplicated and used on multiple counterfeit items.</p></div>
+    </div>
+  </div>
+  <div class="how-section">
+    <div class="how-inner">
+      <div class="section-title">How It Works</div>
+      <div class="section-sub">Four simple steps from product registration to consumer verification</div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><h4>Manufacturer Registers</h4><p>Admin enters product details. System generates unique SHA-256 QR code.</p></div>
+        <div class="step"><div class="step-num">2</div><h4>QR Code Printed</h4><p>Secure QR code downloaded and printed on product packaging.</p></div>
+        <div class="step"><div class="step-num">3</div><h4>Consumer Scans</h4><p>Buyer scans the QR code with any smartphone camera.</p></div>
+        <div class="step"><div class="step-num">4</div><h4>Instant Result</h4><p>System returns Authentic ✅, Suspicious ⚠️, or Counterfeit ❌.</p></div>
+      </div>
+    </div>
+  </div>
+  <footer>© 2024 SecureVerify — Developed by <span>Ganiyu Lawal Sani</span> | BSc. Computer Science, Nasarawa State University, Keffi</footer>
 </div>
 
-<div class="how-section">
-  <div class="how-inner">
-    <div class="section-title">How It Works</div>
-    <div class="section-sub">Four simple steps from product registration to consumer verification</div>
-    <div class="steps">
-      <div class="step"><div class="step-num">1</div><h4>Manufacturer Registers</h4><p>Admin enters product details. System generates unique SHA-256 QR code.</p></div>
-      <div class="step"><div class="step-num">2</div><h4>QR Code Printed</h4><p>Secure QR code is downloaded and printed on product packaging.</p></div>
-      <div class="step"><div class="step-num">3</div><h4>Consumer Scans</h4><p>Buyer scans the QR code with any smartphone camera.</p></div>
-      <div class="step"><div class="step-num">4</div><h4>Instant Result</h4><p>System returns Authentic ✅, Suspicious ⚠️, or Counterfeit ❌ verdict.</p></div>
+<!-- ══════════════════ PAGE: LOGIN ══════════════════ -->
+<div id="page-login" class="page" style="flex-direction:column">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="li">🏭</div>
+        <h2>Manufacturer Login</h2>
+        <p>Access the admin dashboard to register products and manage QR codes</p>
+      </div>
+      <div class="err-msg" id="errMsg">❌ Invalid email or password. Please try again.</div>
+      <div class="form-group"><label>Email Address</label><input id="loginEmail" type="email" value="admin@secureverify.com"/></div>
+      <div class="form-group"><label>Password</label><input id="loginPass" type="password" value="admin123"/></div>
+      <button class="btn-submit" onclick="doLogin()">🔑 Login to Dashboard</button>
+      <div class="demo-hint">🔑 Demo credentials pre-filled — click Login to continue</div>
+      <div class="back-link"><a onclick="showPage('home')">← Back to Home</a></div>
     </div>
   </div>
 </div>
 
-<footer>© 2024 SecureVerify — Developed by <span>Ganiyu Lawal Sani</span> | BSc. Computer Science, Nasarawa State University, Keffi</footer>
+<!-- ══════════════════ PAGE: DASHBOARD ══════════════════ -->
+<div id="page-dashboard" class="page">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sb-brand"><h2>🔐 SecureVerify</h2><p>Admin Dashboard</p></div>
+      <nav class="sb-nav">
+        <div class="sb-item active" onclick="showDash('main')">📊 Dashboard</div>
+        <div class="sb-item" onclick="showDash('main')">📦 Register Product</div>
+        <div class="sb-item" onclick="showDash('logs')">📋 Scan Logs</div>
+        <div class="sb-item" onclick="showPage('verify')">🔍 Verify Product</div>
+      </nav>
+      <div class="sb-footer">
+        <div class="user-badge">
+          <div class="user-av">GL</div>
+          <div class="user-info"><div class="nm">Admin</div><div class="rl">Manufacturer</div></div>
+        </div>
+        <div style="margin-top:10px;font-size:.76rem;color:rgba(255,255,255,.55);cursor:pointer" onclick="doLogout()">🚪 Logout</div>
+      </div>
+    </aside>
+
+    <!-- DASH MAIN -->
+    <div id="dash-main" class="main-content">
+      <div class="topbar">
+        <div><h1>Dashboard Overview</h1><p>Manage products and monitor verification activity</p></div>
+        <button class="btn btn-dark btn-sm" onclick="document.getElementById('regSection').scrollIntoView({behavior:'smooth'})">+ Register New Product</button>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val" id="totalProds">12</div><div class="stat-lbl">Total Products</div><div class="stat-tr">↑ 3 this week</div></div>
+        <div class="stat-card bl"><div class="stat-val" id="totalScans">147</div><div class="stat-lbl">Total Scans</div><div class="stat-tr">↑ 23 today</div></div>
+        <div class="stat-card or"><div class="stat-val">141</div><div class="stat-lbl">Authentic Scans</div><div class="stat-tr">95.9% rate</div></div>
+        <div class="stat-card rd"><div class="stat-val">6</div><div class="stat-lbl">Flagged Scans</div><div class="stat-tr">↓ 2 from last week</div></div>
+      </div>
+      <div class="card" id="regSection">
+        <div class="card-header"><h3>📦 Register New Product</h3></div>
+        <div class="reg-form">
+          <div class="fg"><label>Product Name *</label><input id="pName" placeholder="e.g. Paracetamol 500mg"/></div>
+          <div class="fg"><label>Batch Number *</label><input id="pBatch" placeholder="e.g. BATCH-2024-001"/></div>
+          <div class="fg"><label>Manufacture Date *</label><input id="pMfg" type="date"/></div>
+          <div class="fg"><label>Expiry Date *</label><input id="pExp" type="date"/></div>
+          <div class="fg"><label>Category</label><select id="pCat"><option>Pharmaceutical</option><option>FMCG</option><option>Electronics</option><option>Food & Beverage</option><option>Cosmetics</option></select></div>
+          <div class="fg"><label>Manufacturer Name *</label><input id="pMfgr" placeholder="Your company name"/></div>
+          <div class="form-actions">
+            <button class="btn btn-dark" onclick="registerProduct()">🔐 Generate QR Code</button>
+            <button class="btn" style="background:#f0f4f9;color:var(--text)" onclick="clearForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>📋 Registered Products</h3><span style="font-size:.78rem;color:var(--sub)" id="prodCount">12 products</span></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>#</th><th>Product Name</th><th>Batch No.</th><th>Category</th><th>Date</th><th>Scans</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="prodTable">
+            <tr><td>1</td><td>Paracetamol 500mg</td><td>BATCH-2024-001</td><td>Pharmaceutical</td><td>2024-01-15</td><td>23</td><td><span class="badge auth">✓ Active</span></td><td><button class="btn btn-dark btn-sm" onclick="showQR('Paracetamol 500mg','BATCH-2024-001')">📱 QR</button></td></tr>
+            <tr><td>2</td><td>Vitamin C Tablets</td><td>BATCH-2024-002</td><td>Pharmaceutical</td><td>2024-01-18</td><td>18</td><td><span class="badge auth">✓ Active</span></td><td><button class="btn btn-dark btn-sm" onclick="showQR('Vitamin C','BATCH-2024-002')">📱 QR</button></td></tr>
+            <tr><td>3</td><td>Hand Sanitizer 250ml</td><td>BATCH-2024-003</td><td>FMCG</td><td>2024-01-20</td><td>31</td><td><span class="badge sus">⚠ Flagged</span></td><td><button class="btn btn-dark btn-sm" onclick="showQR('Hand Sanitizer','BATCH-2024-003')">📱 QR</button></td></tr>
+            <tr><td>4</td><td>Malaria Test Kit</td><td>BATCH-2024-004</td><td>Pharmaceutical</td><td>2024-02-01</td><td>14</td><td><span class="badge auth">✓ Active</span></td><td><button class="btn btn-dark btn-sm" onclick="showQR('Malaria Test Kit','BATCH-2024-004')">📱 QR</button></td></tr>
+            <tr><td>5</td><td>Groundnut Oil 1L</td><td>BATCH-2024-005</td><td>Food & Beverage</td><td>2024-02-05</td><td>9</td><td><span class="badge pend">● Pending</span></td><td><button class="btn btn-dark btn-sm" onclick="showQR('Groundnut Oil','BATCH-2024-005')">📱 QR</button></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASH LOGS -->
+    <div id="dash-logs" class="main-content" style="display:none">
+      <div class="topbar">
+        <div><h1>Scan Activity Logs</h1><p>Real-time record of all product verification attempts</p></div>
+        <input class="search-bar" placeholder="🔍 Search..." onkeyup="filterLog(this.value)"/>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val">147</div><div class="stat-lbl">Total Scans</div></div>
+        <div class="stat-card bl"><div class="stat-val">141</div><div class="stat-lbl">Authentic</div></div>
+        <div class="stat-card or"><div class="stat-val">4</div><div class="stat-lbl">Suspicious</div></div>
+        <div class="stat-card rd"><div class="stat-val">2</div><div class="stat-lbl">Counterfeit</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>📋 All Scan Events</h3>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="filter-btn active" onclick="filterLogStatus('all',this)">All</button>
+            <button class="filter-btn" onclick="filterLogStatus('auth',this)">✅ Authentic</button>
+            <button class="filter-btn" onclick="filterLogStatus('sus',this)">⚠️ Suspicious</button>
+            <button class="filter-btn" onclick="filterLogStatus('cf',this)">❌ Counterfeit</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th>#</th><th>Product</th><th>Batch</th><th>Time</th><th>Count</th><th>Response</th><th>Result</th></tr></thead>
+          <tbody id="logTable"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE: VERIFY ══════════════════ -->
+<div id="page-verify" class="page" style="flex-direction:column">
+  <div class="verify-hero"><h1>🔍 Verify Product Authenticity</h1><p>Enter the product code or try a demo scan below</p></div>
+  <div class="verify-main">
+    <div class="scan-card">
+      <h2>Enter Product Code</h2>
+      <p>Type the verification code from the product QR code, or try a demo scan</p>
+      <div class="input-row">
+        <input id="codeInput" placeholder="e.g. PROD-001-a3f2c8d1..." onkeydown="if(event.key==='Enter')doVerify()"/>
+        <button class="btn btn-dark" onclick="doVerify()">🔍 Verify</button>
+      </div>
+      <div class="divider">or try a demo scan</div>
+      <div class="demo-row">
+        <button class="demo-btn da" onclick="showResult('authentic')">✅ Authentic Product</button>
+        <button class="demo-btn df" onclick="showResult('counterfeit')">❌ Counterfeit Product</button>
+        <button class="demo-btn ds" onclick="showResult('suspicious')">⚠️ Suspicious Activity</button>
+      </div>
+    </div>
+    <div class="result-card authentic" id="resAuth">
+      <div class="result-icon">✅</div>
+      <div class="result-title">AUTHENTIC PRODUCT</div>
+      <div class="result-msg">This product has been verified as <strong>genuine</strong>. The SHA-256 cryptographic hash matches the manufacturer's registered record. This product is safe to purchase.</div>
+      <div class="prod-details">
+        <div class="detail-item"><label>Product Name</label><span id="aName">Paracetamol 500mg</span></div>
+        <div class="detail-item"><label>Batch Number</label><span id="aBatch">BATCH-2024-001</span></div>
+        <div class="detail-item"><label>Manufacturer</label><span id="aMfgr">HealthPlus Nigeria Ltd</span></div>
+        <div class="detail-item"><label>Category</label><span id="aCat">Pharmaceutical</span></div>
+        <div class="detail-item"><label>Manufacture Date</label><span id="aMfg">15 Jan 2024</span></div>
+        <div class="detail-item"><label>Expiry Date</label><span id="aExp">14 Jan 2026</span></div>
+        <div class="detail-item"><label>Scan Count</label><span id="aCount">1st scan ✓</span></div>
+        <div class="detail-item"><label>Verified At</label><span id="authTime"></span></div>
+      </div>
+      <div class="hash-info">SHA-256 Verified: a3f2c8d1e94b7062f1a5d3c8b2e9f4a7c1d6e8b3f2a9c5d7e1b4f8a2c6d9e3b1</div>
+    </div>
+    <div class="result-card counterfeit" id="resCf">
+      <div class="result-icon">❌</div>
+      <div class="result-title">COUNTERFEIT WARNING</div>
+      <div class="result-msg">⚠️ <strong>Do NOT purchase this product.</strong> The QR code hash does not match any registered product in our database. This product may be <strong>fake or tampered with</strong>. Report to NAFDAC: 0800-162-3322</div>
+      <div class="prod-details" style="grid-template-columns:1fr">
+        <div class="detail-item"><label>Detection</label><span>Hash mismatch — no match in database</span></div>
+        <div class="detail-item"><label>Detected At</label><span id="cfTime"></span></div>
+        <div class="detail-item"><label>Action</label><span>Report to NAFDAC immediately</span></div>
+      </div>
+      <div class="hash-info">Received: x9z1k2m4... ❌ NO MATCH IN DATABASE</div>
+    </div>
+    <div class="result-card suspicious" id="resSus">
+      <div class="result-icon">⚠️</div>
+      <div class="result-title">SUSPICIOUS ACTIVITY DETECTED</div>
+      <div class="result-msg">The product code is valid, but this QR code has been scanned <strong id="sMsgCount">47 times</strong> across multiple locations — far exceeding the normal threshold. This may indicate code cloning. Exercise caution.</div>
+      <div class="prod-details">
+        <div class="detail-item"><label>Product Name</label><span id="sName">Hand Sanitizer 250ml</span></div>
+        <div class="detail-item"><label>Batch Number</label><span id="sBatch">BATCH-2024-003</span></div>
+        <div class="detail-item"><label>Total Scan Count</label><span id="sCount">47 scans ⚠️</span></div>
+        <div class="detail-item"><label>Anomaly Threshold</label><span>Exceeded (limit: 5)</span></div>
+        <div class="detail-item"><label>Locations</label><span>Multiple detected</span></div>
+        <div class="detail-item"><label>Flagged At</label><span id="susTime"></span></div>
+      </div>
+      <div class="hash-info">SHA-256: d7e2b9f4a1c8d3e6... ⚠️ SCAN COUNT ANOMALY DETECTED</div>
+    </div>
+  </div>
+  <footer>© 2024 SecureVerify — Developed by <span>Ganiyu Lawal Sani</span> | Nasarawa State University, Keffi</footer>
+</div>
+
+<!-- QR Modal -->
+<div class="modal-overlay" id="qrModal">
+  <div class="modal">
+    <h3>📱 Product QR Code</h3>
+    <p id="modalLabel">Product — Batch</p>
+    <canvas id="qrCanvas" class="qr-canvas" width="300" height="300" style="width:220px;height:220px"></canvas>
+    <div class="hash-display" id="hashDisplay">SHA-256: computing...</div>
+    <div class="modal-btns">
+      <button class="btn btn-dark btn-sm" onclick="downloadQR()">⬇ Download</button>
+      <button class="btn btn-sm" style="background:#d5f5e3;color:#1e8449" onclick="copyCode()">📋 Copy Code</button>
+      <button class="btn btn-sm" style="background:#f0f4f9;color:var(--text)" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="js/qrcode.js"></script>
+
+<script>
+// ── SHA-256 implementation ────────────────────────────────────────────────────
+async function sha256(msg){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── Simple QR code drawer (matrix approach) ───────────────────────────────────
+function drawQR(canvas, text){
+  const ctx=canvas.getContext('2d');
+  const size=canvas.width;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,size,size);
+  // Create a simple visual QR-like pattern from hash
+  const hash=text.split('').reduce((a,c)=>(a*31+c.charCodeAt(0))|0,0);
+  const cells=21;const cs=Math.floor(size/cells);
+  ctx.fillStyle='#1a3c6e';
+  // Draw finder patterns
+  [[0,0],[0,14],[14,0]].forEach(([r,c])=>{
+    ctx.fillRect(c*cs,r*cs,7*cs,7*cs);
+    ctx.fillStyle='#fff';ctx.fillRect((c+1)*cs,(r+1)*cs,5*cs,5*cs);
+    ctx.fillStyle='#1a3c6e';ctx.fillRect((c+2)*cs,(r+2)*cs,3*cs,3*cs);
+    ctx.fillStyle='#1a3c6e';
+  });
+  // Data cells based on hash
+  let seed=Math.abs(hash);
+  for(let r=0;r<cells;r++){
+    for(let c=0;c<cells;c++){
+      if((r<9&&c<9)||(r<9&&c>12)||(r>12&&c<9))continue;
+      seed=(seed*1103515245+12345)&0x7fffffff;
+      if(seed%3===0){ctx.fillStyle='#1a3c6e';ctx.fillRect(c*cs,r*cs,cs-1,cs-1);}
+    }
+  }
+  // Border quiet zone
+  ctx.strokeStyle='#ddd';ctx.lineWidth=2;ctx.strokeRect(1,1,size-2,size-2);
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+const registry={};
+function drawQR(canvas,text){
+  if(typeof qrcode==='undefined'){showToast('QR library failed to load — check your internet connection');return;}
+  const qr=qrcode(0,'M');qr.addData(text);qr.make();
+  const n=qr.getModuleCount(),size=canvas.width,cs=Math.floor(size/(n+8)),off=Math.floor((size-cs*n)/2);
+  const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,size,size);ctx.fillStyle='#000';
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(qr.isDark(r,c))ctx.fillRect(off+c*cs,off+r*cs,cs,cs);
+}
+function copyCode(){navigator.clipboard.writeText(window.lastCode||'').then(()=>showToast('📋 Code copied — paste it on the Verify page'));}
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name)?.classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='dashboard') renderLog();
+}
+
+function showDash(section){
+  document.getElementById('dash-main').style.display=section==='main'?'block':'none';
+  document.getElementById('dash-logs').style.display=section==='logs'?'block':'none';
+  document.querySelectorAll('.sb-item').forEach((el,i)=>el.classList.toggle('active',i===(section==='main'?0:2)));
+  if(section==='logs')renderLog();
+}
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+function doLogin(){
+  const e=document.getElementById('loginEmail').value;
+  const p=document.getElementById('loginPass').value;
+  if(e==='admin@secureverify.com'&&p==='admin123'){showPage('dashboard');}
+  else{document.getElementById('errMsg').style.display='block';}
+}
+function doLogout(){showPage('home');}
+document.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&document.getElementById('page-login').classList.contains('active'))doLogin();});
+
+// ── Product registration ───────────────────────────────────────────────────────
+let products=[];
+let prodCount=12;
+
+async function registerProduct(){
+  const name=document.getElementById('pName').value.trim();
+  const batch=document.getElementById('pBatch').value.trim();
+  const mfg=document.getElementById('pMfg').value;
+  const exp=document.getElementById('pExp').value;
+  const cat=document.getElementById('pCat').value;
+  const mfgr=document.getElementById('pMfgr').value.trim();
+  if(!name||!batch||!mfg||!exp||!mfgr){showToast('⚠️ Please fill all required fields');return;}
+  const hash=await sha256(name+batch+mfg+exp+'SECRET_KEY_2024_GANIYU');
+  registry[hash]={name,batch,mfgr,cat,mfg,exp,count:0};
+  prodCount++;
+  const row=`<tr><td>${prodCount}</td><td>${name}</td><td>${batch}</td><td>${cat}</td><td>${new Date().toLocaleDateString()}</td><td>0</td><td><span class="badge auth">✓ Active</span></td><td><button class="btn btn-dark btn-sm" onclick="showQR('${name}','${batch}','${hash}')">📱 QR</button></td></tr>`;
+  document.getElementById('prodTable').insertAdjacentHTML('beforeend',row);
+  document.getElementById('totalProds').textContent=prodCount;
+  document.getElementById('prodCount').textContent=prodCount+' products';
+  clearForm();
+  showToast('✅ Product registered! QR code generated successfully.');
+  await showQR(name,batch,hash);
+}
+
+function clearForm(){['pName','pBatch','pMfg','pExp','pMfgr'].forEach(id=>document.getElementById(id).value='');}
+
+// ── QR Modal ──────────────────────────────────────────────────────────────────
+async function showQR(name,batch,hash){
+  if(!hash)hash=await sha256(name+batch+'SECRET_KEY_2024_GANIYU');
+  document.getElementById('modalLabel').textContent=name+' — '+batch;
+  document.getElementById('hashDisplay').textContent='SHA-256: '+hash.substring(0,48)+'...';
+  const canvas=document.getElementById('qrCanvas');
+  registry[hash]=registry[hash]||{name,batch,mfgr:'—',cat:'—',mfg:'—',exp:'—',count:0};
+  window.lastCode='SECUREVERIFY:'+hash;
+  drawQR(canvas,window.lastCode);
+  document.getElementById('qrModal').classList.add('show');
+}
+function closeModal(){document.getElementById('qrModal').classList.remove('show');}
+function downloadQR(){
+  const canvas=document.getElementById('qrCanvas');
+  const a=document.createElement('a');a.download='SecureVerify_QR.png';a.href=canvas.toDataURL();a.click();
+  showToast('📥 QR Code downloaded!');closeModal();
+}
+
+// ── Verify ────────────────────────────────────────────────────────────────────
+function hideResults(){['resAuth','resCf','resSus'].forEach(id=>document.getElementById(id).style.display='none');}
+function doVerify(){
+  const code=document.getElementById('codeInput').value.trim();
+  if(!code){showToast('Please enter a product code');return;}
+  hideResults();
+  const m=code.match(/[0-9a-f]{64}/i);
+  const p=m&&registry[m[0].toLowerCase()];
+  if(!p){showResult('counterfeit');return;}
+  p.count++;
+  const set=(id,v)=>{document.getElementById(id).textContent=v;};
+  if(p.count>5){
+    set('sName',p.name);set('sBatch',p.batch);set('sCount',p.count+' scans ⚠️');set('sMsgCount',p.count+' times');
+    showResult('suspicious');
+  }else{
+    set('aName',p.name);set('aBatch',p.batch);set('aMfgr',p.mfgr);set('aCat',p.cat);set('aMfg',p.mfg);set('aExp',p.exp);
+    set('aCount',p.count===1?'1st scan ✓':p.count+' scans');
+    showResult('authentic');
+  }
+}
+function showResult(type){
+  hideResults();
+  const now=new Date().toLocaleString();
+  document.getElementById('authTime').textContent=now;
+  document.getElementById('cfTime').textContent=now;
+  document.getElementById('susTime').textContent=now;
+  const el=document.getElementById(type==='authentic'?'resAuth':type==='counterfeit'?'resCf':'resSus');
+  el.style.display='block';
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ── Scan Log ──────────────────────────────────────────────────────────────────
+const LOG_DATA=[
+  {id:1,product:'Paracetamol 500mg',batch:'BATCH-2024-001',time:'2024-03-15 09:12:34',count:'1x',resp:'0.68s',status:'auth'},
+  {id:2,product:'Vitamin C Tablets',batch:'BATCH-2024-002',time:'2024-03-15 09:45:21',count:'1x',resp:'0.72s',status:'auth'},
+  {id:3,product:'Hand Sanitizer 250ml',batch:'BATCH-2024-003',time:'2024-03-15 10:03:57',count:'47x',resp:'0.61s',status:'sus'},
+  {id:4,product:'Malaria Test Kit',batch:'BATCH-2024-004',time:'2024-03-15 10:22:11',count:'1x',resp:'0.55s',status:'auth'},
+  {id:5,product:'Unknown Product',batch:'UNKNOWN',time:'2024-03-15 11:05:44',count:'1x',resp:'0.43s',status:'cf'},
+  {id:6,product:'Paracetamol 500mg',batch:'BATCH-2024-001',time:'2024-03-15 11:38:29',count:'2x',resp:'0.70s',status:'auth'},
+  {id:7,product:'Groundnut Oil 1L',batch:'BATCH-2024-005',time:'2024-03-15 12:14:08',count:'1x',resp:'0.77s',status:'auth'},
+  {id:8,product:'Hand Sanitizer 250ml',batch:'BATCH-2024-003',time:'2024-03-15 13:00:52',count:'48x',resp:'0.63s',status:'sus'},
+  {id:9,product:'Unknown Product',batch:'FAKE-999',time:'2024-03-15 13:45:17',count:'1x',resp:'0.40s',status:'cf'},
+  {id:10,product:'Vitamin C Tablets',batch:'BATCH-2024-002',time:'2024-03-15 14:22:33',count:'2x',resp:'0.69s',status:'auth'},
+  {id:11,product:'Malaria Test Kit',batch:'BATCH-2024-004',time:'2024-03-15 15:01:19',count:'2x',resp:'0.58s',status:'auth'},
+  {id:12,product:'Paracetamol 500mg',batch:'BATCH-2024-001',time:'2024-03-15 15:44:02',count:'3x',resp:'0.74s',status:'auth'},
+];
+let logFilter='all', logSearch='';
+function renderLog(){
+  const tbody=document.getElementById('logTable');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  LOG_DATA.filter(l=>{
+    const ms=logFilter==='all'||l.status===logFilter;
+    const ss=!logSearch||(l.product+l.batch).toLowerCase().includes(logSearch.toLowerCase());
+    return ms&&ss;
+  }).forEach(l=>{
+    const badge=l.status==='auth'?'<span class="badge auth">✅ Authentic</span>':l.status==='cf'?'<span class="badge cf">❌ Counterfeit</span>':'<span class="badge sus">⚠️ Suspicious</span>';
+    tbody.insertAdjacentHTML('beforeend',`<tr><td>${l.id}</td><td><strong>${l.product}</strong></td><td>${l.batch}</td><td>${l.time}</td><td>${l.count}</td><td>${l.resp}</td><td>${badge}</td></tr>`);
+  });
+}
+function filterLogStatus(s,btn){logFilter=s;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderLog();}
+function filterLog(v){logSearch=v;renderLog();}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+</script>
 </body>
 </html>
